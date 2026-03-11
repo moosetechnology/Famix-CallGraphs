@@ -100,6 +100,11 @@ FamixAbstractCallGraphNode >> initialize [
 
 { #category : 'inspector' }
 FamixAbstractCallGraphNode >> inspectGraph: aBuilder [
+	"Note about node colors:
+		- Red: Entry point
+		- Green: Node with additional properties
+		- Purple: Node that is an entry point and has additional properties
+		- Grey: Other"
 
 	<inspectorPresentationOrder: 950 title: 'Graph'>
 	| canvas shapes |
@@ -111,8 +116,11 @@ FamixAbstractCallGraphNode >> inspectGraph: aBuilder [
 				                 draggable;
 				                 model: node;
 				                 yourself.
-
+				
 			          node = self ifTrue: [ box color: #red ].
+			
+						"We want to color nodes with additional properties if this feature is available"
+						(node respondsTo: #additionalProperties) ifTrue: [ node additionalProperties ifNotNil: [ box color: (node = self ifTrue: [ #purple ] ifFalse: [ #green ]) ] ].
 
 			          box @ (RSLabeled new text: [ :n | n realMethod printString ]) ].
 
